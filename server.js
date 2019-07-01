@@ -21,8 +21,19 @@ server.get("/games", async (req, res) => {
   }
 });
 
-server.post("/games", (req, res) => {
-  null;
+server.post("/games", async (req, res) => {
+  let game = req.body;
+  if (!game.title) {
+    res.status(422).json({ message: "Missing title info" });
+  } else if (!game.genre) {
+    res.status(422).json({ message: "Missing genre info" });
+  }
+  try {
+    const addedGame = await db.insert(game);
+    res.status(201).json(addedGame);
+  } catch (err) {
+    // res.status(500).json(err);
+  }
 });
 
 module.exports = server;
